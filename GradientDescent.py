@@ -13,10 +13,12 @@ class GradientDescent(object):
         self.x, self.y, self.fx = x, y, fx
         self.coord_x, self.coord_y = [], []
         self.options = options
-        self.iteration_counter, self.max_iterations = 0, 4
+        self.iteration_counter, self.max_iterations = 0, 8
 
     def set_options(self):
         self.rounding = self.options['rounding'] if self.options['rounding'] else 2
+        self.min_value_vector_grad = self.options[
+            'min_value_vector_gradiente'] if self.options['min_value_vector_gradiente'] else 0.05
         self.x_ini = self.options['x_ini'] if self.options['x_ini'] else 0
         self.y_ini = self.options['y_ini'] if self.options['y_ini'] else 0
 
@@ -40,9 +42,8 @@ class GradientDescent(object):
         self.arrayFx.append(self.process_function())
         self.process_gradient()
         self.arrayGrad.append("({},{})".format(self.x_grad, self.y_grad))
-        self.arrayAlpha.append(str(self.calculate_alpha())[0:6])
-        self.x_i = self.x_i-self.x_grad*self.alpha
-        self.y_i = self.y_i-self.y_grad*self.alpha
+        self.arrayAlpha.append(round(self.calculate_alpha(), 3))
+        self.setting_new_point()
 
     def process_function(self):
         return round(float(self.fx.subs({self.x: self.x_i, self.y: self.y_i})), self.rounding)
@@ -64,8 +65,8 @@ class GradientDescent(object):
         return sy.diff(self.fx, var)
 
     def calculate_fx_grad(self):
-        x_g = self.x_i - self.x_grad
-        y_g = self.y_i - self.y_grad
+        x_g = self.x_i + self.x_grad
+        y_g = self.y_i + self.y_grad
         return round(float(self.fx.subs({self.x: x_g, self.y: y_g})), self.rounding)
 
     def calculate_alpha(self):
@@ -80,15 +81,16 @@ class GradientDescent(object):
         a = sy.Symbol('a')
         x_g = self.x_i + self.x_grad*a
         y_g = self.y_i + self.y_grad*a
-        print(x_g)
-        print(y_g)
         gx = self.fx.subs({self.x: x_g, self.y: y_g})
-        print(sy.diff(gx, a))
-        sys.exit(0)
-        r = sy.solve(self.fx.subs({self.x: x_g, self.y: y_g}))
+        r = sy.solve(sy.diff(gx, a))
         self.alpha = r[0]
-        print(self.alpha)
         return self.alpha
+
+    def setting_new_point(self):
+        self.x_i = round(self.x_i+self.x_grad*self.alpha, 2)
+        self.y_i = round(self.y_i+self.y_grad*self.alpha, 2)
+        if self.x_i <= self.min_value_vector_grad and self.y_i <= self.min_value_vector_grad:
+            sys.exit(0)
 
     def show_table_result(self):
         print("\n")

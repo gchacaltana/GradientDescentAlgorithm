@@ -33,7 +33,8 @@ class Application(object):
         self.y_ini = float(input("y: "))
 
     def setConfig(self):
-        self.config['rounding'] = 2
+        self.config['rounding'] = 3
+        self.config['min_value_vector_gradiente'] = 0.05
         self.config['x_ini'] = self.x_ini
         self.config['y_ini'] = self.y_ini
 
@@ -45,21 +46,6 @@ class Application(object):
 
 if __name__ == "__main__":
     try:
-        """
-        app = Application()
-        # ----
-        
-        #r = solve(((-44*a-2)**2)+(-44*a-2*(3+24*a))**2)
-        a = sy.Symbol('a')
-        r = app.f(-44*a,3+24*a)
-        rs = sy.solve(r)
-        #print(str(round(sy.N(rs[0]),3))[0:6])
-        print(round(sy.N(rs[0]),3))
-        sys.exit(0)
-        print(str(sy.N(r[0]))[0:6])
-        print(str(round(sy.N(r[0]),3))[0:6])
-        sys.exit(0)
-        """
         app = Application()
         app.run()
     except (Exception, TypeError, IndexError) as err:
