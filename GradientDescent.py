@@ -13,12 +13,11 @@ class GradientDescent(object):
         self.x, self.y, self.fx = x, y, fx
         self.coord_x, self.coord_y = [], []
         self.options = options
-        self.iteration_counter, self.max_iterations = 0, 8
+        self.iteration_counter, self.max_iterations = 0, 9
 
     def set_options(self):
         self.rounding = self.options['rounding'] if self.options['rounding'] else 2
-        self.min_value_vector_grad = self.options[
-            'min_value_vector_gradiente'] if self.options['min_value_vector_gradiente'] else 0.05
+        self.min_value_fx = self.options['min_value_fx'] if self.options['min_value_fx'] else 0.05
         self.x_ini = self.options['x_ini'] if self.options['x_ini'] else 0
         self.y_ini = self.options['y_ini'] if self.options['y_ini'] else 0
 
@@ -30,9 +29,9 @@ class GradientDescent(object):
         print("----------------------------------------------")
         print("\nDada la funcion f(x)")
         print("\nf(x) = {}".format(sy.simplify(self.fx)))
-        self.x_i, self.y_i = self.x_ini, self.y_ini
+        self.x_i, self.y_i,self.rfx = self.x_ini, self.y_ini, 100
         self.arrayPoints, self.arrayFx, self.arrayGrad, self.arrayAlpha = [], [], [], []
-        while(self.iteration_counter < self.max_iterations):
+        while(self.rfx > self.min_value_fx):
             self.iteration_counter = self.iteration_counter+1
             self.calculate()
         self.show_table_result()
@@ -46,7 +45,8 @@ class GradientDescent(object):
         self.setting_new_point()
 
     def process_function(self):
-        return round(float(self.fx.subs({self.x: self.x_i, self.y: self.y_i})), self.rounding)
+        self.rfx = round(float(self.fx.subs({self.x: self.x_i, self.y: self.y_i})), self.rounding)
+        return self.rfx
 
     def process_gradient(self):
         """
@@ -89,8 +89,6 @@ class GradientDescent(object):
     def setting_new_point(self):
         self.x_i = round(self.x_i+self.x_grad*self.alpha, 2)
         self.y_i = round(self.y_i+self.y_grad*self.alpha, 2)
-        if self.x_i <= self.min_value_vector_grad and self.y_i <= self.min_value_vector_grad:
-            sys.exit(0)
 
     def show_table_result(self):
         print("\n")

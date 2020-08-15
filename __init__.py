@@ -34,7 +34,7 @@ class Application(object):
 
     def setConfig(self):
         self.config['rounding'] = 3
-        self.config['min_value_vector_gradiente'] = 0.05
+        self.config['min_value_fx'] = 0.01
         self.config['x_ini'] = self.x_ini
         self.config['y_ini'] = self.y_ini
 
